@@ -1,0 +1,372 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API-REST Desafio Técnico - Desenvolvedor Backend",
+    "description": "Desafio para avaliação de conhecimentos técnicos para a vaga de Desenvolvedor Backend.",
+    "contact": {
+      "name": "Lucas Araújo",
+      "email": "lucasisaac1306@hotmail.com.br"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3005/tasks",
+      "description": "Servidor Local"
+    }
+  ],
+  "components": {
+    "schemas": {
+      "ResponseOfListAllTasks": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid",
+              "example": "885a6955-3efa-4320-91af-00baaf075387"
+            },
+            "title": {
+              "type": "string",
+              "example": "string title"
+            },
+            "description": {
+              "type": "string",
+              "example": "string description"
+            },
+            "status": {
+              "type": "boolean",
+              "example": false
+            }
+          }
+        }
+      },
+      
+      "RespostTask" :{
+        "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid",
+              "example": "885a6955-3efa-4320-91af-00baaf075387"
+            },
+            "title": {
+              "type": "string",
+              "example": "string title"
+            },
+            "description": {
+              "type": "string",
+              "example": "string description"
+            },
+            "status": {
+              "type": "boolean",
+              "example": true
+            }
+          }
+      },
+
+      "RequestCreateANewTask": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "string title"
+          },
+          "description": {
+            "type": "string",
+            "example": "string description"
+          }
+        },
+        "required": ["title", "description"]
+      },
+
+      "BodyUpdateTask":{
+        "type":"object",
+        "properties":{
+          "title":{
+            "type":"string",
+            "example":"string title"
+         },
+         "description": {
+          "type": "string",
+          "example": "string description"
+        },
+        "status": {
+          "type": "boolean",
+          "example": true
+        }
+        }
+      }
+    }
+  },
+
+  "paths": {
+    "/": {
+      "get": {
+        "tags": ["Tasks"],
+        "summary": "List all tasks",
+
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": { 
+                  "$ref": "#/components/schemas/ResponseOfListAllTasks" 
+                }
+              }
+            }
+          },
+          "500":{
+            "description":"Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to retrieve tasks."
+                    }
+                  }
+                }
+              }
+            }            
+          }
+        }
+      },
+
+      "post": {
+        "tags": ["Tasks"],
+        "summary": "Create a new task",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestCreateANewTask"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Resource created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespostTask"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to create task."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/{id}": {
+      "get": {
+        "tags": ["Tasks"],
+        "summary": "Get a task by ID",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "ID of the task",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespostTask"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Task not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Task not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to retrieve task."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+
+      "put": {
+        "tags": ["Tasks"],
+        "summary": "Update a task by ID",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "ID of the task",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BodyUpdateTask"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful update",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespostTask"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Task not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Task not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to update task."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+
+      "delete": {
+        "tags": ["Tasks"],
+        "summary": "Delete a task by ID",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "ID of the task",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "description": "Task not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Task not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to delete task."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
